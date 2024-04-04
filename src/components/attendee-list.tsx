@@ -11,8 +11,13 @@ import { Table } from "./table/table";
 import { TableHeader } from "./table/table-header";
 import { TableCell } from "./table/table-cell";
 import { TableRow } from "./table/table-row";
+import { attendees } from "../data/attendees";
+import { formatRelative } from "date-fns/formatRelative";
+import { ptBR } from "date-fns/locale";
 
 export function AttendeeList() {
+  function onSearchInputChanged() {}
+
   return (
     <div className="flex flex-col gap-4">
       <div className="flex gap-3 items-center">
@@ -46,9 +51,9 @@ export function AttendeeList() {
           </tr>
         </thead>
         <tbody>
-          {Array.from({ length: 5 }).map((_, i) => (
+          {attendees.map((attendees) => (
             <TableRow
-              key={i}
+              key={attendees.id}
               className="border-b border-white/10 hover:bg-white/5"
             >
               <TableCell>
@@ -57,17 +62,25 @@ export function AttendeeList() {
                   type="checkbox"
                 />
               </TableCell>
-              <TableCell>12345</TableCell>
+              <TableCell>{attendees.id}</TableCell>
               <TableCell>
                 <div className="flex flex-col gap-1">
                   <span className="font-semibold text-zinc-50">
-                    Alisson Souza
+                    {attendees.name}
                   </span>
-                  <span>binho_alisson@hotmail.com</span>
+                  <span>{attendees.email}</span>
                 </div>
               </TableCell>
-              <TableCell>7 dias atrás</TableCell>
-              <TableCell>3 dias atrás</TableCell>
+              <TableCell>
+                {formatRelative(attendees.createdAt, new Date(), {
+                  locale: ptBR,
+                })}
+              </TableCell>
+              <TableCell>
+                {formatRelative(attendees.checkedInAt, new Date(), {
+                  locale: ptBR,
+                })}
+              </TableCell>
               <TableCell>
                 <IconButton transparent={true}>
                   <MoreHorizontal size={16} />
