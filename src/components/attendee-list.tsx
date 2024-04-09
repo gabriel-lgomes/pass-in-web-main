@@ -11,12 +11,22 @@ import { Table } from "./table/table";
 import { TableHeader } from "./table/table-header";
 import { TableCell } from "./table/table-cell";
 import { TableRow } from "./table/table-row";
-import { attendees } from "../data/attendees";
 import { formatRelative } from "date-fns/formatRelative";
 import { ptBR } from "date-fns/locale";
+import useFetch from "../hooks/useFetch";
+import { ChangeEvent, useRef, useState } from "react";
 
 export function AttendeeList() {
-  function onSearchInputChanged() {}
+  const urlAPI = "http://localhost:3000/users";
+  const [url, setUrl] = useState(urlAPI);
+  const { data } = useFetch(url);
+  const search = useRef<HTMLInputElement>(null);
+
+  function handleInputChange(e: ChangeEvent<HTMLInputElement>) {
+    setTimeout(() => {
+      setUrl(`${urlAPI}/?q=${e.target.value}`);
+    }, 500);
+  }
 
   return (
     <div className="flex flex-col gap-4">
@@ -27,6 +37,8 @@ export function AttendeeList() {
           <input
             className="bg-transparent flex-1 border-0 text-sm focus:ring-0 focus:border-0"
             placeholder="Buscar participante..."
+            ref={search}
+            onChange={handleInputChange}
           />
         </div>
       </div>
@@ -51,43 +63,44 @@ export function AttendeeList() {
           </tr>
         </thead>
         <tbody>
-          {attendees.map((attendees) => (
-            <TableRow
-              key={attendees.id}
-              className="border-b border-white/10 hover:bg-white/5"
-            >
-              <TableCell>
-                <input
-                  className="bg-black/20 rounded border border-white/18 text-orange-400 outline-none focus:ring-0"
-                  type="checkbox"
-                />
-              </TableCell>
-              <TableCell>{attendees.id}</TableCell>
-              <TableCell>
-                <div className="flex flex-col gap-1">
-                  <span className="font-semibold text-zinc-50">
-                    {attendees.name}
-                  </span>
-                  <span>{attendees.email}</span>
-                </div>
-              </TableCell>
-              <TableCell>
-                {formatRelative(attendees.createdAt, new Date(), {
-                  locale: ptBR,
-                })}
-              </TableCell>
-              <TableCell>
-                {formatRelative(attendees.checkedInAt, new Date(), {
-                  locale: ptBR,
-                })}
-              </TableCell>
-              <TableCell>
-                <IconButton transparent={true}>
-                  <MoreHorizontal size={16} />
-                </IconButton>
-              </TableCell>
-            </TableRow>
-          ))}
+          {data &&
+            data.map((attendees) => (
+              <TableRow
+                key={attendees.id}
+                className="border-b border-white/10 hover:bg-white/5"
+              >
+                <TableCell>
+                  <input
+                    className="bg-black/20 rounded border border-white/18 text-orange-400 outline-none focus:ring-0"
+                    type="checkbox"
+                  />
+                </TableCell>
+                <TableCell>{attendees.id}</TableCell>
+                <TableCell>
+                  <div className="flex flex-col gap-1">
+                    <span className="font-semibold text-zinc-50">
+                      {attendees.name}
+                    </span>
+                    <span>{attendees.email}</span>
+                  </div>
+                </TableCell>
+                <TableCell>
+                  {formatRelative(attendees.createdAt, new Date(), {
+                    locale: ptBR,
+                  })}
+                </TableCell>
+                <TableCell>
+                  {formatRelative(attendees.checkedInAt, new Date(), {
+                    locale: ptBR,
+                  })}
+                </TableCell>
+                <TableCell>
+                  <IconButton transparent={true}>
+                    <MoreHorizontal size={16} />
+                  </IconButton>
+                </TableCell>
+              </TableRow>
+            ))}
         </tbody>
         <tfoot>
           <TableRow>
