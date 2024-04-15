@@ -1,5 +1,6 @@
 import { X } from "lucide-react";
 import { Input } from "./input";
+import { Button } from "./button";
 
 export function Modal() {
   return (
@@ -17,12 +18,7 @@ export function Modal() {
           <Input type="text" name="id" disabled placeholder="id" />
           <Input type="text" name="Nome" placeholder="Nome" />
           <Input type="email" name="Email" placeholder="E-mail" />
-          <button
-            type="submit"
-            className="flex w-full justify-center mt-3 rounded-md bg-indigo-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
-          >
-            Salvar
-          </button>
+          <Button type="submit">Salvar</Button>
         </form>
       </div>
     </div>
