@@ -1,11 +1,11 @@
-import React, { ChangeEvent, useEffect, useRef, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import {
   Search,
   MoreHorizontal,
   ChevronsLeft,
-  ChevronLeft,
   ChevronsRight,
-  ChevronRight,
+  SquarePen,
+  Trash,
 } from "lucide-react";
 import { IconButton } from "./icon-button";
 import { Table } from "./table/table";
@@ -16,14 +16,16 @@ import { formatRelative } from "date-fns/formatRelative";
 import { ptBR } from "date-fns/locale";
 import useFetch from "../hooks/useFetch";
 import ReactPaginate from "react-paginate";
+import { UsersInterface } from "../interfaces/users";
+import { Modal } from "./modal";
 
 export function AttendeeList() {
-  const urlAPI = "http://localhost:3000/users";
+  const urlAPI = import.meta.env.VITE_API_URL;
   const [url, setUrl] = useState(urlAPI);
   const { data } = useFetch(url);
   const search = useRef<HTMLInputElement>(null);
   const [page, setPage] = useState(0);
-  const [filterData, setFilterData] = useState<any[]>([]);
+  const [filterData, setFilterData] = useState<UsersInterface[]>([]);
   const itemsPerPage = 20;
 
   useEffect(() => {
@@ -108,9 +110,14 @@ export function AttendeeList() {
                 })}
               </TableCell>
               <TableCell>
-                <IconButton transparent={true}>
-                  <MoreHorizontal size={16} />
-                </IconButton>
+                <div className="flex gap-2">
+                  <IconButton transparent={true}>
+                    <SquarePen size={16} />
+                  </IconButton>
+                  <IconButton transparent={true}>
+                    <Trash size={16} />
+                  </IconButton>
+                </div>
               </TableCell>
             </TableRow>
           ))}
@@ -136,6 +143,7 @@ export function AttendeeList() {
           </IconButton>
         }
       />
+      <Modal />
     </div>
   );
 }
