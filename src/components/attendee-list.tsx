@@ -27,6 +27,7 @@ export function AttendeeList() {
   const [page, setPage] = useState(0);
   const [filterData, setFilterData] = useState<UsersInterface[]>([]);
   const itemsPerPage = 20;
+  const [openModal, setOpenModal] = useState(false);
 
   useEffect(() => {
     if (data) {
@@ -112,7 +113,7 @@ export function AttendeeList() {
               <TableCell>
                 <div className="flex gap-2">
                   <IconButton transparent={true}>
-                    <SquarePen size={16} />
+                    <SquarePen size={16} onClick={() => setOpenModal(true)} />
                   </IconButton>
                   <IconButton transparent={true}>
                     <Trash size={16} />
@@ -143,7 +144,7 @@ export function AttendeeList() {
           </IconButton>
         }
       />
-      <Modal />
+      <Modal isVisible={openModal} onClose={() => setOpenModal(false)} />
     </div>
   );
 }

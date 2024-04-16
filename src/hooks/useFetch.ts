@@ -3,8 +3,13 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { UsersInterface } from "../interfaces/users";
+import { newData } from "../interfaces/newData";
 
-export default function useFetch(url: string) {
+export default function useFetch(
+  url: string,
+  method?: string,
+  newData?: newData
+) {
   const [data, setData] = useState<UsersInterface[] | null>(null);
   const [error, setError] = useState<any>(null);
   const [loading, setLoading] = useState(false);
@@ -12,9 +17,21 @@ export default function useFetch(url: string) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setLoading(true); // Indica que a chamada está em andamento
-        const response = await axios(url);
+        const response = await axios.get(url);
         setData(response.data);
+        setLoading(true); // Indica que a chamada está em andamento
+
+        // if (method === "patch") {
+        //   // axios
+        //   //   .patch(url, {
+        //   //     name: newData?.name,
+        //   //     email: newData?.email,
+        //   //   })
+        //   //   .then((response) => {
+        //   //     console.log(response);
+        //   //   });
+        //   console.log(newData);
+        // }
       } catch (err) {
         console.error(err);
         setError(err);
