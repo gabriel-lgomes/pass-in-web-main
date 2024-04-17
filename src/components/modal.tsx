@@ -1,27 +1,27 @@
 import { X } from "lucide-react";
 import { Input } from "./input";
 import { Button } from "./button";
-import { ComponentProps, useState } from "react";
+import { ComponentProps, useState } from "react"; // Adicionando o import useEffect
 import useFetch from "../hooks/useFetch";
 import { newData } from "../interfaces/newData";
 import { useForm } from "react-hook-form";
 
 interface ModalProps extends ComponentProps<"div"> {
-  isVisible: boolean; // Corrigido de isVisibile para isVisible
+  isVisible: boolean;
   onClose: () => void;
+  dataModal: newData;
 }
 
-export function Modal({ isVisible, onClose }: ModalProps) {
+export function Modal({ isVisible, onClose, dataModal }: ModalProps) {
   const urlAPI = import.meta.env.VITE_API_URL;
 
-  const [newData, setNewData] = useState<newData>();
-
-  // useFetch(`${urlAPI}/1`, undefined, newData);
-
+  const [newDataState, setNewDataState] = useState<newData | undefined>();
   const { register, handleSubmit } = useForm();
 
-  function handleData(data: any) {
-    console.log(data);
+  const { data } = useFetch(`${urlAPI}/1`, "patch", newDataState);
+
+  function handleData(formData: any) {
+    setNewDataState(formData);
   }
 
   return (
@@ -43,20 +43,27 @@ export function Modal({ isVisible, onClose }: ModalProps) {
           onSubmit={handleSubmit(handleData)}
           className="flex flex-col justify-center"
         >
-          <Input type="text" name="id" disabled placeholder="ID" />
+          <Input
+            type="text"
+            name="id"
+            disabled
+            placeholder={dataModal.id.toString()}
+          />
           <Input
             {...register("name")}
             type="text"
             name="name"
-            placeholder="Nome"
+            placeholder={dataModal.name}
           />
           <Input
             {...register("email")}
             type="email"
             name="email"
-            placeholder="E-mail"
+            placeholder={dataModal.email}
           />
-          <Button type="submit">Salvar</Button>
+          <Button type="submit" onClick={onClose}>
+            Salvar
+          </Button>
         </form>
       </div>
     </div>

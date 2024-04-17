@@ -2,8 +2,8 @@
   "users": [
     {
       "id": 1,
-      "name": "Teste",
-      "email": "usuario@exemplo.com",
+      "name": "Alisson",
+      "email": "aalisson@aa.com",
       "createdAt": "4/7/2024",
       "checkedInAt": "3/25/2024"
     },

@@ -13,7 +13,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         {name}:
         <input
           {...rest} // Passando outras props restantes
-          name={name} // Definindo o atributo 'name' obrigatório para o registro
+          name={name}
           ref={ref} // Repassando a ref
           // Registro do campo usando o React Hook Form, se 'register' estiver disponível
           {...(register && { ref: register })}

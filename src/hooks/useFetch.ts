@@ -20,18 +20,6 @@ export default function useFetch(
         const response = await axios.get(url);
         setData(response.data);
         setLoading(true); // Indica que a chamada está em andamento
-
-        // if (method === "patch") {
-        //   // axios
-        //   //   .patch(url, {
-        //   //     name: newData?.name,
-        //   //     email: newData?.email,
-        //   //   })
-        //   //   .then((response) => {
-        //   //     console.log(response);
-        //   //   });
-        //   console.log(newData);
-        // }
       } catch (err) {
         console.error(err);
         setError(err);
@@ -42,6 +30,27 @@ export default function useFetch(
 
     fetchData();
   }, [url]);
+
+  useEffect(() => {
+    if (method === "patch" && newData) {
+      axios
+        .patch(url, {
+          name: newData?.name,
+          email: newData?.email,
+        })
+        .then((response) => {
+          setData(response.data);
+          setLoading(true);
+        })
+        .catch((err) => {
+          console.error(err);
+          setError(err);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
+  }, [method, url, newData]);
 
   return { data, loading, error };
 }

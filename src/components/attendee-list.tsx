@@ -1,7 +1,6 @@
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import {
   Search,
-  MoreHorizontal,
   ChevronsLeft,
   ChevronsRight,
   SquarePen,
@@ -18,6 +17,7 @@ import useFetch from "../hooks/useFetch";
 import ReactPaginate from "react-paginate";
 import { UsersInterface } from "../interfaces/users";
 import { Modal } from "./modal";
+import { newData } from "../interfaces/newData";
 
 export function AttendeeList() {
   const urlAPI = import.meta.env.VITE_API_URL;
@@ -26,6 +26,11 @@ export function AttendeeList() {
   const search = useRef<HTMLInputElement>(null);
   const [page, setPage] = useState(0);
   const [filterData, setFilterData] = useState<UsersInterface[]>([]);
+  const [dataModal, setDataModal] = useState<newData>({
+    id: 1,
+    name: "",
+    email: "",
+  });
   const itemsPerPage = 20;
   const [openModal, setOpenModal] = useState(false);
 
@@ -43,6 +48,12 @@ export function AttendeeList() {
     setTimeout(() => {
       setUrl(`${urlAPI}/?q=${e.target.value}`);
     }, 500);
+  }
+
+  function handleModal({ id, email, name }: newData) {
+    console.log(`CLICOU`);
+    setOpenModal(true);
+    setDataModal({ id, email, name });
   }
 
   return (
@@ -80,9 +91,9 @@ export function AttendeeList() {
           </tr>
         </thead>
         <tbody>
-          {filterData.map((attendees) => (
+          {filterData.map(({ id, name, email, createdAt, checkedInAt }) => (
             <TableRow
-              key={attendees.id}
+              key={id}
               className="border-b border-white/10 hover:bg-white/5"
             >
               <TableCell>
@@ -91,29 +102,30 @@ export function AttendeeList() {
                   type="checkbox"
                 />
               </TableCell>
-              <TableCell>{attendees.id}</TableCell>
+              <TableCell>{id}</TableCell>
               <TableCell>
                 <div className="flex flex-col gap-1">
-                  <span className="font-semibold text-zinc-50">
-                    {attendees.name}
-                  </span>
-                  <span>{attendees.email}</span>
+                  <span className="font-semibold text-zinc-50">{name}</span>
+                  <span>{email}</span>
                 </div>
               </TableCell>
               <TableCell>
-                {formatRelative(attendees.createdAt, new Date(), {
+                {formatRelative(createdAt, new Date(), {
                   locale: ptBR,
                 })}
               </TableCell>
               <TableCell>
-                {formatRelative(attendees.checkedInAt, new Date(), {
+                {formatRelative(checkedInAt, new Date(), {
                   locale: ptBR,
                 })}
               </TableCell>
               <TableCell>
                 <div className="flex gap-2">
                   <IconButton transparent={true}>
-                    <SquarePen size={16} onClick={() => setOpenModal(true)} />
+                    <SquarePen
+                      size={16}
+                      onClick={() => handleModal({ id, name, email })}
+                    />
                   </IconButton>
                   <IconButton transparent={true}>
                     <Trash size={16} />
@@ -144,7 +156,11 @@ export function AttendeeList() {
           </IconButton>
         }
       />
-      <Modal isVisible={openModal} onClose={() => setOpenModal(false)} />
+      <Modal
+        dataModal={dataModal}
+        isVisible={openModal}
+        onClose={() => setOpenModal(false)}
+      />
     </div>
   );
 }
