@@ -2,10 +2,10 @@
   "users": [
     {
       "id": 1,
-      "name": "Gabriel Lopes",
-      "email": "gabriel_lopes.g@hotmail.com",
-      "createdAt": "4/7/2024",
-      "checkedInAt": "3/25/2024"
+      "name": "Alisson Souza",
+      "email": "alisson_souza@hotmail.com",
+      "createdAt": "3/31/2024",
+      "checkedInAt": "3/27/2024"
     },
     {
       "id": 2,

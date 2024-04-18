@@ -33,6 +33,7 @@ export function AttendeeList() {
   });
   const itemsPerPage = 20;
   const [openModal, setOpenModal] = useState(false);
+  const [deleteUser, setDeleteUser] = useState(false);
 
   useEffect(() => {
     if (data) {
@@ -127,7 +128,13 @@ export function AttendeeList() {
                     />
                   </IconButton>
                   <IconButton transparent={true}>
-                    <Trash size={16} />
+                    <Trash
+                      size={16}
+                      onClick={() => {
+                        handleModal({ id, name, email });
+                        setDeleteUser(true);
+                      }}
+                    />
                   </IconButton>
                 </div>
               </TableCell>
@@ -158,6 +165,7 @@ export function AttendeeList() {
       <Modal
         dataModal={dataModal}
         isVisible={openModal}
+        deleteUser={deleteUser}
         onClose={() => setOpenModal(false)}
       />
     </div>

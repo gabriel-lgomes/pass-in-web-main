@@ -15,23 +15,23 @@ export default function useFetch(
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(url);
-        setData(response.data);
-        setLoading(true); // Indica que a chamada está em andamento
-      } catch (err) {
-        console.error(err);
-        setError(err);
-      } finally {
-        setLoading(false); // Indica que a chamada foi concluída (com sucesso ou erro)
-      }
-    };
+    if (method === undefined) {
+      const fetchData = async () => {
+        try {
+          const response = await axios.get(url);
+          setData(response.data);
+          setLoading(true); // Indica que a chamada está em andamento
+        } catch (err) {
+          console.error(err);
+          setError(err);
+        } finally {
+          setLoading(false); // Indica que a chamada foi concluída (com sucesso ou erro)
+        }
+      };
 
-    fetchData();
-  }, [url]);
+      fetchData();
+    }
 
-  useEffect(() => {
     if (method === "patch" && newData) {
       axios
         .patch(url, {
@@ -50,7 +50,11 @@ export default function useFetch(
           setLoading(false);
         });
     }
-  }, [method, url, newData]);
+
+    if (method === "delete") {
+      axios.delete(url);
+    }
+  }, [url, method, newData]);
 
   return { data, loading, error };
 }

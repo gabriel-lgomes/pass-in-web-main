@@ -5,14 +5,21 @@ import { ComponentProps, useEffect, useState } from "react"; // Adicionando o im
 import useFetch from "../hooks/useFetch";
 import { newData } from "../interfaces/newData";
 import { useForm } from "react-hook-form";
+import axios from "axios";
 
 interface ModalProps extends ComponentProps<"div"> {
   isVisible: boolean;
   onClose: () => void;
   dataModal: newData;
+  deleteUser?: boolean;
 }
 
-export function Modal({ isVisible, onClose, dataModal }: ModalProps) {
+export function Modal({
+  isVisible,
+  onClose,
+  dataModal,
+  deleteUser,
+}: ModalProps) {
   const urlAPI = import.meta.env.VITE_API_URL;
 
   const [newDataState, setNewDataState] = useState<newData | undefined>();
@@ -21,10 +28,14 @@ export function Modal({ isVisible, onClose, dataModal }: ModalProps) {
     shouldUseNativeValidation: true,
   });
 
-  const { data } = useFetch(`${urlAPI}/1`, "patch", newDataState);
+  useFetch(`${urlAPI}/1`, "patch", newDataState);
 
   function handleData(formData: any) {
     setNewDataState(formData);
+  }
+
+  function handleRemoveUser() {
+    axios.delete(`${urlAPI}/${dataModal.id}`);
   }
 
   return (
@@ -33,9 +44,11 @@ export function Modal({ isVisible, onClose, dataModal }: ModalProps) {
         isVisible ? "opacity-100" : "opacity-0 pointer-events-none"
       }`}
     >
-      <div className="bg-gray-900 rounded px-5 py-8 w-[500px] rounded-md relative">
-        <h3 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-white">
-          Edição do usuário:
+      <div className="bg-gray-900 px-5 py-8 w-[500px] rounded-md relative">
+        <h3 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-white max-w-[300px] block mx-auto">
+          {deleteUser
+            ? `Tem certeza que deseja realizar essa ação?`
+            : `Edição do usuário:`}
         </h3>
         <div className="absolute right-4 top-4 text-white">
           <button onClick={onClose}>
@@ -59,6 +72,7 @@ export function Modal({ isVisible, onClose, dataModal }: ModalProps) {
             name="name"
             placeholder={dataModal.name}
             required
+            disabled={deleteUser}
           />
           <Input
             {...register("email", {
@@ -72,17 +86,28 @@ export function Modal({ isVisible, onClose, dataModal }: ModalProps) {
             name="email"
             placeholder={dataModal.email}
             required
+            disabled={deleteUser}
           />
-          <Button
-            disabled={!formState.isValid}
-            type="submit"
-            onClick={() => {
-              onClose();
-              window.location.reload();
-            }}
-          >
-            Salvar
-          </Button>
+          {deleteUser ? (
+            <Button
+              onClick={() => {
+                handleRemoveUser();
+              }}
+            >
+              Confirmar
+            </Button>
+          ) : (
+            <Button
+              disabled={!formState.isValid}
+              type="submit"
+              onClick={() => {
+                onClose();
+                window.location.reload();
+              }}
+            >
+              Salvar
+            </Button>
+          )}
         </form>
       </div>
     </div>
