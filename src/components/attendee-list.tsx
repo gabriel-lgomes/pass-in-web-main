@@ -51,7 +51,6 @@ export function AttendeeList() {
   }
 
   function handleModal({ id, email, name }: newData) {
-    console.log(`CLICOU`);
     setOpenModal(true);
     setDataModal({ id, email, name });
   }

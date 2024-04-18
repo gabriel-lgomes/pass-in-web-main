@@ -1,7 +1,7 @@
 import { X } from "lucide-react";
 import { Input } from "./input";
 import { Button } from "./button";
-import { ComponentProps, useState } from "react"; // Adicionando o import useEffect
+import { ComponentProps, useEffect, useState } from "react"; // Adicionando o import useEffect
 import useFetch from "../hooks/useFetch";
 import { newData } from "../interfaces/newData";
 import { useForm } from "react-hook-form";
@@ -16,7 +16,10 @@ export function Modal({ isVisible, onClose, dataModal }: ModalProps) {
   const urlAPI = import.meta.env.VITE_API_URL;
 
   const [newDataState, setNewDataState] = useState<newData | undefined>();
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, formState } = useForm({
+    mode: "onSubmit",
+    shouldUseNativeValidation: true,
+  });
 
   const { data } = useFetch(`${urlAPI}/1`, "patch", newDataState);
 
@@ -46,22 +49,38 @@ export function Modal({ isVisible, onClose, dataModal }: ModalProps) {
           <Input
             type="text"
             name="id"
+            value={dataModal.id}
             disabled
             placeholder={dataModal.id.toString()}
           />
           <Input
-            {...register("name")}
+            {...register("name", { required: true })}
             type="text"
             name="name"
             placeholder={dataModal.name}
+            required
           />
           <Input
-            {...register("email")}
+            {...register("email", {
+              required: true,
+              pattern: {
+                value: /\S+@\S+\.\S+/,
+                message: "Coloque um e-mail válido!",
+              },
+            })}
             type="email"
             name="email"
             placeholder={dataModal.email}
+            required
           />
-          <Button type="submit" onClick={onClose}>
+          <Button
+            disabled={!formState.isValid}
+            type="submit"
+            onClick={() => {
+              onClose();
+              window.location.reload();
+            }}
+          >
             Salvar
           </Button>
         </form>
